@@ -1,35 +1,66 @@
 
+// fetch data, return promise, reference html element, clear existing data, enter and append keys and values to html element
+function metadata(metaSample) {
+    d3.json('../data/samples.json').then((data) => {
+        var metadata = data.metadata;
+        var filteredData = metadata.filter(row => row.id == metaSample);
+        console.log(filteredData);
+        var resultArray = filteredData[0];
+        var metadisplay = d3.select("#sample-metadata");
+        metadisplay.html('');
+        Object.entries(resultArray).forEach(([key, value]) => {
+            metadisplay.append('h6').text(`${key} ${value}`);
+        });
+    });
+}
 
-function metaData(metaObj) {
-    d3.json('../data/samples.json').then(metaObj => {
-        var panel = d3.select("#sample-metadata");
+function barChart(samplesObj) {
+    d3.json('../data/samples.json').then((data) => {
+        var samples = data.samples;
+        var id = samples.filter(row => row.id == samplesObj);
+        var otuLabels = id[0].otu_ids;
+        var xValues = id[0].sample_values;
+        var hoverText = id[0].otu_labels;
+        console.log(otuLabels, xValues, hoverText);
+        var bar = {
+            y: otuLabels.slice(0,10),
+            x: xValues.slice(0,10),
+            type: 'bar',
+            text: hoverText.slice(0,10),
+            orientation: 'h'
+        };
+        var barLayout = {
+            title: "Top 10 Bacteria Found in Chosen Sample ID",
+            yaxis: {title: 'Bacteria ID'},
+            xaxis: {title: 'Frequency'}
+        };
+        Plotly.newPlot('bar', [bar], barLayout);
+})
 
-        panel.html("");
-        Object.entries(metaObj).forEach(([key, value]) => {(`${key}:${value}`);
-            panel.append("h6").text
-        })
-    })
-};
-
-
+}
 
 
 function init() {
-    var htmlElement = d3.select("#selDataset");
-    d3.json('../data/samples.json').then((nameObj) => {
-        names = nameObj.names
+    var subjectID = d3.select("#selDataset");
+    d3.json('../data/samples.json').then((data) => {
+        var names = data.names
         names.forEach((listItem) => {
-            htmlElement
+            subjectID
                 .append('option')
                 .text(listItem)
                 .property("value", listItem)
-            console.log(htmlElement)
         });
-        const sampleNameObject = nameObj[0]
-        console.log(sampleNameObject)
-        metaData(sampleNameObject);
+        const nameSample = names[0];
+        console.log(nameSample);
+        metadata(nameSample);
+        barChart(nameSample)
     })
 };
+function optionChanged(selectedID) {
+    metadata(selectedID)
+    barChart(selectedID)
+}
+
 init();
 
 
