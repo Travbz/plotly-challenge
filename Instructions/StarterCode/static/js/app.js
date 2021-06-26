@@ -23,10 +23,10 @@ function barChart(samplesObj) {
         var hoverText = id[0].otu_labels;
         console.log(otuLabels, xValues, hoverText);
         var bar = {
-            y: otuLabels.slice(0,10),
-            x: xValues.slice(0,10),
+            y: otuLabels.slice(0,10).reverse(),
+            x: xValues.slice(0,10).reverse(),
             type: 'bar',
-            text: hoverText.slice(0,10),
+            text: hoverText.slice(0,10).reverse(),
             orientation: 'h'
         };
         var barLayout = {
@@ -34,10 +34,24 @@ function barChart(samplesObj) {
             yaxis: {title: 'Bacteria ID'},
             xaxis: {title: 'Frequency'}
         };
+        var bubbs = {
+            x: otuLabels,
+            y: xValues,
+            text: hoverText,
+            mode: 'markers',
+            marker: {
+                size: xValues,
+                color: otuLabels
+            }
+        };
+        var bubbleLayout= {
+            title: 'Bacteria found in selected sample ID',
+            showlegend: false, 
+        };
+        Plotly.newPlot('bubble',[bubbs], bubbleLayout);
         Plotly.newPlot('bar', [bar], barLayout);
-})
-
-}
+});
+};
 
 
 function init() {
