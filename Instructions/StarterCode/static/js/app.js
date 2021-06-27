@@ -19,34 +19,39 @@ function barChart(samplesObj) {
         var samples = data.samples;
         var id = samples.filter(row => row.id == samplesObj);
         var otuLabels = id[0].otu_ids.sort((a,b)=>b-a).slice(0,10);
-        var xValues = id[0].sample_values;
+        var values = id[0].sample_values.sort((a,b)=>b-a).slice(0,10).map(otuID =>`otu${otuID}`);
         var hoverText = id[0].otu_labels;
-        console.log(otuLabels, xValues, hoverText);
+        console.log(otuLabels, values, hoverText);
         var bar = {
-            y: otuLabels.reverse(),
-            x: xValues.slice(0,10).reverse(),
+            x: otuLabels.reverse(),
+            y: values,
             type: 'bar',
-            text: hoverText.slice(0,10).reverse(),
+            text: hoverText,
             orientation: 'h'
         };
         var barLayout = {
             title: "Top 10 Bacteria Found in Chosen Sample ID",
             yaxis: {title: 'Bacteria ID'},
+            margin:{t:30,l:110},
             xaxis: {title: 'Frequency'}
         };
         var bubbs = {
             x: otuLabels,
-            y: xValues,
+            y: values,
             text: hoverText,
             mode: 'markers',
             marker: {
-                size: xValues,
-                color: otuLabels
+                color: ['rgb(93, 164, 214)', 'rgb(255, 144, 14)', 'rgb(44, 160, 101)', 'rgb(255, 65, 54)', 'rgb(255, 127, 0)', 'rgb(255, 219, 0)', 'rgb(87, 219, 0)', 'rgb(87, 219, 209)', 'rgb(87, 94, 209)', 'rgb(252, 94, 209)'],
+                opacity: [1, 0.8, 0.6, 0.4],
+                size: [25, 35, 45, 55, 65, 75, 85, 95, 105, 115]
             }
         };
         var bubbleLayout= {
             title: 'Bacteria found in selected sample ID',
             showlegend: false, 
+            color: ['rgb(93, 164, 214)', 'rgb(255, 144, 14)', 'rgb(44, 160, 101)', 'rgb(255, 65, 54)', 'rgb(255, 127, 0)', 'rgb(255, 219, 0)', 'rgb(87, 219, 0)', 'rgb(87, 219, 209)', 'rgb(87, 94, 209)', 'rgb(252, 94, 209)'],
+            opacity: [1, 0.8, 0.6, 0.4],
+            size: [25, 35, 45, 55, 65, 75, 85, 95, 105, 115]
         };
         Plotly.newPlot('bubble',[bubbs], bubbleLayout);
         Plotly.newPlot('bar', [bar], barLayout);
