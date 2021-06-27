@@ -18,12 +18,12 @@ function barChart(samplesObj) {
     d3.json('../data/samples.json').then((data) => {
         var samples = data.samples;
         var id = samples.filter(row => row.id == samplesObj);
-        var otuLabels = id[0].otu_ids;
+        var otuLabels = id[0].otu_ids.sort((a,b)=>b-a).slice(0,10);
         var xValues = id[0].sample_values;
         var hoverText = id[0].otu_labels;
         console.log(otuLabels, xValues, hoverText);
         var bar = {
-            y: otuLabels.slice(0,10).reverse(),
+            y: otuLabels.reverse(),
             x: xValues.slice(0,10).reverse(),
             type: 'bar',
             text: hoverText.slice(0,10).reverse(),
